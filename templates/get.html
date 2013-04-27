@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block navblock %}
+              <li><a href="/">Home</a></li>
+              <li><a href="/add">Add</a></li>
+              <li><a href="/list">List</a></li>
+              <li class="active"><a href="/get">Get</a></li>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+      <form>
+        <fieldset>
+          <legend>Edit document</legend>
+          <label>Name</label>
+          <input type="text" value="{{doc.name}}">
+          <label>Description</label>
+          <input type="text" value="{{doc.descr}}">
+          <label>Content</label>
+          <textarea rows="10">{{doc.content}}</textarea>
+          <br>
+          <button type="submit" class="btn">Update</button>
+        </fieldset>
+      </form>
+    </div> <!-- /container -->
+{% endblock %}

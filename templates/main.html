@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block navblock %}
+              <li class="active"><a href="/">Home</a></li>
+              <li><a href="/add">Add</a></li>
+              <li><a href="/list">List</a></li>
+              <li><a href="/get">Get</a></li>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+      <form>
+        <fieldset>
+          <legend>Add a document</legend>
+          <label>Name</label>
+          <input type="text" placeholder="Name of document...">
+          <label>Description</label>
+          <input type="text" placeholder="Short description of document">
+          <label>Content</label>
+          <textarea></textarea>
+          <button type="submit" class="btn">Submit</button>
+        </fieldset>
+      </form>
+    </div> <!-- /container -->
+{% endblock %}
