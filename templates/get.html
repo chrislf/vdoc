@@ -2,24 +2,44 @@
 {% block navblock %}
               <li><a href="/">Home</a></li>
               <li><a href="/add">Add</a></li>
-              <li><a href="/list">List</a></li>
-              <li class="active"><a href="/get">Get</a></li>
+              <li class="active"><a href="/view">View</a></li>
 {% endblock %}
 
 {% block content %}
+    {% if doc_list %}
     <div class="container">
-      <form>
+      <div class='btn-group'>
+        <span class="label label-info">Version</span>
+        <br>
+        {% if doc_list.1 %}
+        <button class="btn" id="prevbtn">Previous</button>
+        {% else %}
+        <button class="btn" id="prevbtn" disabled="true">Previous</button>
+        {% endif %}
+        <button class="btn" id="nextbtn" disabled="true">Next</button>
+        <button class="btn" id="currbtn" disabled="true">Current</button>
+      </div>
+    </div>
+    {% endif %}
+    <div class="container">
+      {% for doc in doc_list %}
+      <form class="docform hidden" name="update_doc_frm" action="/add" method="POST">
         <fieldset>
           <legend>Edit document</legend>
           <label>Name</label>
-          <input type="text" value="{{doc.name}}">
+          <input type="text" name="name" value="{{doc.name}}">
           <label>Description</label>
-          <input type="text" value="{{doc.descr}}">
+          <input type="text" name="descr" value="{{doc.descr}}">
           <label>Content</label>
-          <textarea rows="10">{{doc.content}}</textarea>
+          <textarea name="content" rows="10">{{doc.content}}</textarea>
           <br>
           <button type="submit" class="btn">Update</button>
         </fieldset>
       </form>
+      {% endfor %}
     </div> <!-- /container -->
+{% endblock %}
+
+{% block javascripts %}
+    <script src="/static/js/vdoc_get.js"></script>
 {% endblock %}

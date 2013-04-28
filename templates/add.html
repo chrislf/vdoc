@@ -2,21 +2,26 @@
 {% block navblock %}
               <li><a href="/">Home</a></li>
               <li class="active"><a href="/add">Add</a></li>
-              <li><a href="/list">List</a></li>
-              <li><a href="/get">Get</a></li>
+              <li><a href="/view">View</a></li>
 {% endblock %}
 
 {% block content %}
+    {% if error %}
+    <div class="alert">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>No document uploaded</strong>
+    </div>
+    {% endif %}
     <div class="container">
-      <form>
+      <form name="add_doc_frm" action="/add" method="POST">
         <fieldset>
           <legend>Add a document</legend>
           <label>Name</label>
-          <input type="text" placeholder="Name of document...">
+          <input name="name" type="text" placeholder="Name of document..." autofocus="autofocus">
           <label>Description</label>
-          <input type="text" placeholder="Short description of document...">
+          <input name="descr" type="text" placeholder="Short description of document...">
           <label>Content</label>
-          <textarea rows="10" cols="100" placeholder="Content goes here..."></textarea>
+          <textarea name="content" rows="10" cols="100" placeholder="Content goes here..."></textarea>
           <br>
           <button type="submit" class="btn">Submit</button>
         </fieldset>

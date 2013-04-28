@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% block navblock %}
-              <li><a href="/">Home</a></li>
+              <li class="active"><a href="/">Home</a></li>
               <li><a href="/add">Add</a></li>
-              <li class="active"><a href="/list">List</a></li>
-              <li><a href="/get">Get</a></li>
+              <li><a href="/view">View</a></li>
 {% endblock %}
 
 {% block content %}
@@ -17,9 +16,9 @@
         <tbody>
           {% for doc in doc_list %}
           <tr>
-            <td><a href="/list?name={{doc.name}}">{{ doc.name }}</a></td>
-            <td><a href="/list?descr={{doc.descr}}">{{ doc.descr }}</a></td>
-            <td><a href="/get?name={{doc.name}}&descr={{doc.descr}}">Latest Doc</a></td>
+            <td>{{ doc.name }}</td>
+            <td>{{ doc.descr }}</td>
+            <td><a href="/view?name={{doc.name}}&descr={{doc.descr}}">Latest Doc</a></td>
           </tr>
           {% endfor %}
         </tbody>

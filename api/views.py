@@ -26,8 +26,8 @@ def numberify(doc):
                 retdict[key] = value
     return retdict
 
-def unquote_GET(GET):
-    ''' return a GET as a dict
+def unquote_qd(GET):
+    ''' return a QueryDict as a dict
         with the keys unquoted
     '''
     d = GET.dict()
@@ -40,11 +40,11 @@ def fetch_docs(qrydict, latest=False):
     ''' helper function for get_docs/get_doc.
         Also used in main/views.py
     '''
-    matches = db.find(qrydict)
+    matches = db.find(qrydict).sort('_id', -1)
     if matches.count() == 0:
         raise DoesNotExist()
     if latest:
-        doc = matches.sort('_id', -1).limit(1).next()
+        doc = matches.limit(1).next()
         doc.pop('_id')
         return doc
     else:
@@ -63,7 +63,7 @@ def get_docs(request):
     if request.method != 'GET':
         return HttpResponseBadRequest('% not supported' % request.method)
     try:
-        doc_list = fetch_docs(unquote_GET(request.GET))
+        doc_list = fetch_docs(unquote_qd(request.GET))
     except DoesNotExist:
         return HttpResponseNotFound()
 
@@ -83,7 +83,7 @@ def get_doc(request):
         return HttpResponseBadRequest('% not supported' % request.method)
 
     try:
-        latest_doc = fetch_docs(unquote_GET(request.GET.dict()), latest=True)
+        latest_doc = fetch_docs(unquote_qd(request.GET.dict()), latest=True)
     except DoesNotExist:
         return HttpResponseNotFound()
 
@@ -92,6 +92,17 @@ def get_doc(request):
     except ValueError:
         return HttpResponseServerError('Document not JSON-formattable')
     return HttpResponse(jdoc, mimetype='application/json')
+
+
+def insert_doc(doc):
+    ''' Helper function for add_doc.
+        Also used in main/views.py
+    '''
+    print doc
+    prev_tot = db.find(doc).count()
+    db.update(doc, doc, upsert=True)
+    new_tot = db.find(doc).count()
+    return { 'added': new_tot - prev_tot, 'total': new_tot }
 
 
 def add_doc(request):
@@ -103,9 +114,13 @@ def add_doc(request):
         return HttpResponseBadRequest('% not supported' % request.method)
     doc = request.POST.dict()
     cleaned_doc = numberify(doc)
-    db.update(cleaned_doc, cleaned_doc, upsert=True)
-    total = db.find(cleaned_doc).count()
-    res = {'result': 'success', 'total_docs': total}
+    res = insert_doc(cleaned_doc)
+    total = res['total']
+    if res['added']:
+        result = 'success'
+    else:
+        result = 'nochange'
+    res = {'result': result, 'total_docs': total}
     return HttpRepsonse(json.dumps(res), mimetype='application.json')
 
 
@@ -131,12 +146,9 @@ def list_docs(request):
         the keys in the request correspond
         to valid fields.
     '''
-    if request is None:
-        keys = keylist
-    else:
-        if request.method != 'GET':
-            return HttpResponseBadRequest('% not supported' % request.method)
-        keys = request.GET.dict().keys()
+    if request.method != 'GET':
+        return HttpResponseBadRequest('% not supported' % request.method)
+    keys = request.GET.dict().keys()
     if len(keys) == 0:
         return HttpResponseBadRequest('need at least one field to search for')
     results = search_with_keys(keys)
