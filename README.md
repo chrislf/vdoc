@@ -13,3 +13,12 @@ Dependencies
 [Bootstrap] (http://twitter.github.io/bootstrap/) and [JQuery] (http://jquery.com) are already in the static dir for the main app, and will be pulled in with a collectstatic.
 
 The code assumes a MongoDB instance running on localhost without authentication.
+
+Known Issues
+------------
+
+If a document update matches a previous version of the document, the update fails. This is due to the following code in insert_doc:
+
+    db.update(doc, doc, upsert=True)
+
+which does the versioning update atomically, but does not handle the aforementioned case.
