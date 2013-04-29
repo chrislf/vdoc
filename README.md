@@ -6,9 +6,10 @@ This is a simple project to provide an interface to a document store, where upda
 Dependencies
 ------------
 
-[Pymongo] [http://api.mongodb.org/python/current] v 2.5 (tested, earlier versions may work)
-[Django 1.5] [https://www.djangoproject.com/]
+[Pymongo] (http://api.mongodb.org/python/current) v 2.5 (tested, earlier versions may work)
 
-[Bootstrap] [http://twitter.github.io/bootstrap/] and [JQuery] [http://jquery.com] are already in the static dir for the main app, and will be pulled in with a collectstatic.
+[Django 1.5] (https://www.djangoproject.com/)
+
+[Bootstrap] (http://twitter.github.io/bootstrap/) and [JQuery] (http://jquery.com) are already in the static dir for the main app, and will be pulled in with a collectstatic.
 
 The code assumes a MongoDB instance running on localhost without authentication.
